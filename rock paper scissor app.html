@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rock Paper Scissors ✊✋✌️</title>
+  <style>
+    :root {
+      --neon-blue: #08f;
+      --neon-pink: #f0f;
+      --neon-green: #0f8;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background-size: cover;
+      font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 20px;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      color: white;
+      text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+      letter-spacing: 2px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--neon-blue);
+      box-shadow: 0 0 10px var(--neon-blue);
+      border-radius: 3px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+    }
+
+    .game-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      padding: 2.5rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2), 
+                  0 0 15px rgba(0, 195, 255, 0.1);
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+                  var(--neon-blue), 
+                  var(--neon-pink), 
+                  var(--neon-green));
+      background-size: 200% 200%;
+      z-index: -1;
+      border-radius: 22px;
+      animation: gradientBorder 3s ease infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes gradientBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .instructions {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 1px;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0 3rem;
+      flex-wrap: wrap;
+    }
+
+    .choice {
+      background: rgba(0, 119, 255, 0.2);
+      border: 2px solid var(--neon-blue);
+      color: white;
+      font-size: 3rem;
+      padding: 1.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 119, 255, 0.3);
+    }
+
+    .choice::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0.3),
+        rgba(255,255,255,0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+
+    .choice:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 5px 25px rgba(0, 119, 255, 0.5),
+                  0 0 20px rgba(0, 195, 255, 0.4);
+      background: rgba(0, 119, 255, 0.4);
+    }
+
+    .choice:hover::before {
+      opacity: 1;
+      animation: shine 1.5s ease infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -50%; }
+      100% { left: 150%; }
+    }
+
+    .choice:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+    .choice:nth-child(1) {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 15px rgba(0, 136, 255, 0.3);
+    }
+
+    .choice:nth-child(2) {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    }
+
+    .choice:nth-child(3) {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
+
+    .choice:nth-child(1):hover {
+      box-shadow: 0 5px 25px rgba(0, 136, 255, 0.5),
+                  0 0 20px rgba(0, 195, 255, 0.4);
+    }
+
+    .choice:nth-child(2):hover {
+      box-shadow: 0 5px 25px rgba(255, 0, 255, 0.5),
+                  0 0 20px rgba(255, 0, 195, 0.4);
+    }
+
+    .choice:nth-child(3):hover {
+      box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5),
+                  0 0 20px rgba(0, 255, 195, 0.4);
+    }
+
+    .scores {
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
+
+    .score {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      color: var(--neon-green);
+      text-shadow: 0 0 10px var(--neon-green);
+    }
+
+    .animation-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 200px;
+      margin: 2rem 0;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .hand {
+      font-size: 5rem;
+      transform-style: preserve-3d;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.7));
+    }
+
+    .player-hand {
+      transform: translateX(-50px) rotateY(0deg);
+    }
+
+    .computer-hand {
+      transform: translateX(50px) rotateY(180deg);
+    }
+
+    .vs {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      background: rgba(255,255,255,0.1);
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    }
+
+    .outcome {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 2rem 0;
+      height: 3rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px currentColor;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .outcome.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .win {
+      color: var(--neon-green);
+    }
+
+    .lose {
+      color: var(--neon-pink);
+    }
+
+    .draw {
+      color: var(--neon-blue);
+    }
+
+    @keyframes shakePlayer {
+      0% { transform: translateX(-50px) rotateY(0deg) rotateZ(0deg); }
+      25% { transform: translateX(-50px) rotateY(0deg) rotateZ(-15deg); }
+      50% { transform: translateX(-50px) rotateY(0deg) rotateZ(15deg); }
+      75% { transform: translateX(-50px) rotateY(0deg) rotateZ(-15deg); }
+      100% { transform: translateX(-50px) rotateY(0deg) rotateZ(0deg); }
+    }
+
+    @keyframes shakeComputer {
+      0% { transform: translateX(50px) rotateY(180deg) rotateZ(0deg); }
+      25% { transform: translateX(50px) rotateY(180deg) rotateZ(-15deg); }
+      50% { transform: translateX(50px) rotateY(180deg) rotateZ(15deg); }
+      75% { transform: translateX(50px) rotateY(180deg) rotateZ(-15deg); }
+      100% { transform: translateX(50px) rotateY(180deg) rotateZ(0deg); }
+    }
+
+    .shake {
+      animation: shakePlayer 0.5s ease-in-out, shakeComputer 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse {
+      animation: pulse 0.5s ease;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .game-container {
+        padding: 1.5rem;
+      }
+      
+      .choices {
+        gap: 1rem;
+      }
+      
+      .choice {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+      }
+      
+      .hand {
+        font-size: 4rem;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Rock Paper Scissors</h1>
+  <p class="subtitle">The Ultimate Showdown</p>
+
+  <div class="game-container">
+    <p class="instructions">Choose your weapon:</p>
+    <div class="choices">
+      <button class="choice" onclick="play('rock')">✊</button>
+      <button class="choice" onclick="play('paper')">✋</button>
+      <button class="choice" onclick="play('scissors')">✌️</button>
+    </div>
+    
+    <div class="animation-container hidden" id="animation-container">
+      <div class="hand player-hand" id="player-hand">✊</div>
+      <div class="vs">VS</div>
+      <div class="hand computer-hand" id="computer-hand">✊</div>
+    </div>
+    
+    <div class="outcome" id="outcome"></div>
+    
+    <div class="scores">
+      <div class="score">
+        <span>You</span>
+        <span class="score-value" id="player-score">0</span>
+      </div>
+      <div class="score">
+        <span>Computer</span>
+        <span class="score-value" id="computer-score">0</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>© created by Shankar mahadev A</footer>
+
+  <script>
+    let playerScore = 0;
+    let computerScore = 0;
+    let isAnimating = false;
+
+    function getHandSymbol(choice) {
+      switch(choice) {
+        case 'rock': return '✊';
+        case 'paper': return '✋';
+        case 'scissors': return '✌️';
+        default: return '✊';
+      }
+    }
+
+    function play(playerChoice) {
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const choices = ['rock', 'paper', 'scissors'];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+      
+      // Show animation container
+      const animationContainer = document.getElementById('animation-container');
+      animationContainer.classList.remove('hidden');
+      
+      // Set initial hands
+      const playerHand = document.getElementById('player-hand');
+      const computerHand = document.getElementById('computer-hand');
+      const outcomeElement = document.getElementById('outcome');
+      
+      playerHand.textContent = getHandSymbol(playerChoice);
+      computerHand.textContent = getHandSymbol(computerChoice);
+      
+      // Reset animation classes
+      playerHand.classList.remove('shake');
+      computerHand.classList.remove('shake');
+      outcomeElement.className = 'outcome';
+      outcomeElement.textContent = '';
+      
+      // Force reflow to restart animation
+      void playerHand.offsetWidth;
+      void computerHand.offsetWidth;
+      
+      // Add shake animation
+      playerHand.classList.add('shake');
+      computerHand.classList.add('shake');
+      
+      // Determine outcome after animation
+      setTimeout(() => {
+        let outcome = '';
+        
+        if (playerChoice === computerChoice) {
+          outcome = 'Draw!';
+          outcomeElement.classList.add('draw');
+        } else if (
+          (playerChoice === 'rock' && computerChoice === 'scissors') ||
+          (playerChoice === 'paper' && computerChoice === 'rock') ||
+          (playerChoice === 'scissors' && computerChoice === 'paper')
+        ) {
+          outcome = 'You Win!';
+          outcomeElement.classList.add('win');
+          playerScore++;
+          document.getElementById('player-score').classList.add('pulse');
+        } else {
+          outcome = 'You Lose!';
+          outcomeElement.classList.add('lose');
+          computerScore++;
+          document.getElementById('computer-score').classList.add('pulse');
+        }
+        
+        outcomeElement.textContent = outcome;
+        document.getElementById('player-score').textContent = playerScore;
+        document.getElementById('computer-score').textContent = computerScore;
+        outcomeElement.classList.add('visible');
+        
+        // Remove pulse animation after it completes
+        setTimeout(() => {
+          document.getElementById('player-score').classList.remove('pulse');
+          document.getElementById('computer-score').classList.remove('pulse');
+        }, 500);
+        
+        isAnimating = false;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
